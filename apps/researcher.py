@@ -5,10 +5,8 @@ import streamlit as st
 import leafmap.foliumap as leafmap
 import plotly.express as px
 
-
-@st.cache(allow_output_mutation=True)
-def create_dsl():
-    return scholarpy.Dsl()
+if "dsl" not in st.session_state:
+    st.session_state["dsl"] = scholarpy.Dsl()
 
 
 @st.cache(allow_output_mutation=True)
@@ -73,8 +71,7 @@ def annual_citations(pubs, col="year"):
 def app():
 
     st.title("Researcher")
-    dsl = create_dsl()
-
+    dsl = st.session_state["dsl"]
     row1_col1, row1_col2 = st.columns([1, 1])
 
     with row1_col1:

@@ -1,9 +1,12 @@
+import scholarpy
 import streamlit as st
 from multiapp import MultiApp
 from apps import h_index, home, journal, orcid, researcher
 
 st.set_page_config(layout="wide")
 
+if "dsl" not in st.session_state:
+    st.session_state["dsl"] = scholarpy.Dsl()
 
 apps = MultiApp()
 

@@ -3,6 +3,11 @@ import pandas as pd
 import sys
 import os
 import streamlit as st
+import scholarpy
+
+if "dsl" not in st.session_state:
+    st.session_state["dsl"] = scholarpy.Dsl()
+
 
 @st.cache
 def the_H_function(sorted_citations_list, n=1):
@@ -15,9 +20,10 @@ def the_H_function(sorted_citations_list, n=1):
     >>> the_H_function([1000, 20]) => 2
     """
     if sorted_citations_list and sorted_citations_list[0] >= n:
-        return the_H_function(sorted_citations_list[1:], n+1)
+        return the_H_function(sorted_citations_list[1:], n + 1)
     else:
-        return n-1
+        return n - 1
+
 
 def dim_login(key=None, endpoint=None):
 
@@ -27,7 +33,7 @@ def dim_login(key=None, endpoint=None):
     if endpoint is None:
         ENDPOINT = "https://app.dimensions.ai"
 
-    try:        
+    try:
         dimcli.login(key=KEY, endpoint=ENDPOINT)
         dsl = dimcli.Dsl()
         return dsl
@@ -43,14 +49,15 @@ def get_pubs_df(dsl, researcher_id):
     pubs = dsl.query(q.format(researcher_id))
     return pubs.as_dataframe()
 
+
 @st.cache
 def get_citations(df):
-    return list(df.fillna(0)['times_cited'])
+    return list(df.fillna(0)["times_cited"])
 
 
 def app():
 
-    dsl = dim_login()
+    dsl = st.session_state["dsl"]
 
     researchER_id = st.text_input("Enter researcher ID:", "ur.013632443777.66")
     df = get_pubs_df(dsl, researchER_id)

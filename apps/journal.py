@@ -4,6 +4,10 @@ import dimcli
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+import scholarpy
+
+if "dsl" not in st.session_state:
+    st.session_state["dsl"] = scholarpy.Dsl()
 
 # create output data folder
 FOLDER_NAME = "data"
@@ -56,10 +60,10 @@ def app():
     )
 
     st.session_state["orcids"] = None
-
-    token = get_token()
-    dimcli.login(key=token, endpoint="https://app.dimensions.ai")
-    dsl = dimcli.Dsl()
+    dsl = st.session_state["dsl"]
+    # token = get_token()
+    # dimcli.login(key=token, endpoint="https://app.dimensions.ai")
+    # dsl = dimcli.Dsl()
 
     categories = get_journals()
 

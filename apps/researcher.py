@@ -82,13 +82,14 @@ def app():
 
     if name:
 
-        ids = dsl.search_researcher_by_name(name)
+        ids, names = dsl.search_researcher_by_name(name, return_list=True)
         if ids.count_total > 0:
-            options = ids.as_dataframe()["id"].values.tolist()
+            # options = ids.as_dataframe()["id"].values.tolist()
             with row1_col1:
-                id = st.selectbox("Select a researcher id:", options)
+                name = st.selectbox("Select a researcher id:", names)
 
-            if id:
+            if name:
+                id = name.split("|")[1].strip()
                 id_info = dsl.search_researcher_by_id(id, return_df=False)
 
                 info_df = json_to_df(id_info, transpose=True)
@@ -142,3 +143,5 @@ def app():
                         st.dataframe(df)
                     else:
                         st.text("No publications found")
+        else:
+            st.text("No results found.")

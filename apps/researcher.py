@@ -123,7 +123,13 @@ def app():
                             st.plotly_chart(fig)
 
                         st.header("Map of collaborator institutions")
-                        m = leafmap.Map(center=[0, 0], zoom_start=1)
+                        m = leafmap.Map(
+                            center=[0, 0],
+                            zoom_start=1,
+                            latlon_control=False,
+                            draw_control=False,
+                            measure_control=False,
+                        )
                         m.add_marker_cluster(df3)
                         m.to_streamlit(height=420)
 

@@ -127,6 +127,7 @@ def app():
                             latlon_control=False,
                             draw_control=False,
                             measure_control=False,
+                            locate_control=True,
                         )
                         m.add_marker_cluster(df3)
                         m.to_streamlit(height=420)

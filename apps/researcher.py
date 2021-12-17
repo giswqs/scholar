@@ -70,7 +70,7 @@ def annual_citations(pubs, col="year"):
 
 def app():
 
-    st.title("Researcher")
+    st.title("Search Researcher by Name")
     dsl = st.session_state["dsl"]
     row1_col1, row1_col2 = st.columns([1, 1])
 
@@ -98,6 +98,9 @@ def app():
                     st.header("Researcher Information")
                     if not info_df.empty:
                         st.dataframe(info_df)
+                        leafmap.st_download_button(
+                            "Download data", info_df, csv_sep="\t"
+                        )
                     else:
                         st.text("No information found")
 
@@ -129,7 +132,7 @@ def app():
                             measure_control=False,
                             locate_control=True,
                         )
-                        m.add_marker_cluster(df3)
+                        m.add_points_from_xy(df3)
                         m.to_streamlit(height=420)
 
                 else:
@@ -139,6 +142,9 @@ def app():
                     st.header("Publications")
                     if df is not None:
                         st.dataframe(df)
+                        leafmap.st_download_button(
+                            "Download data", df, file_name="data.csv", csv_sep="\t"
+                        )
                     else:
                         st.text("No publications found")
         else:

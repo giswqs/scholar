@@ -10,7 +10,7 @@ if "dsl" not in st.session_state:
 
 
 def app():
-    st.title("Search Publications by Keywords")
+    st.title("Search Publications by Keyword")
     dsl = st.session_state["dsl"]
 
     row1_col1, row1_col2, row1_col3 = st.columns(3)
@@ -46,3 +46,6 @@ def app():
         """
         st.markdown(markdown)
         st.dataframe(df)
+
+        if not df.empty:
+            leafmap.st_download_button("Download data", df, csv_sep="\t")

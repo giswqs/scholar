@@ -74,12 +74,21 @@ def app():
             )
 
         if name:
-            titles = dsl.search_journal_by_title(
-                name, exact_match=exact_match
-            ).as_dataframe()
-            titles = titles[titles["type"].isin(types)]
+            result = dsl.search_journal_by_title(name, exact_match=exact_match)
+            if result is not None:
+                titles = result.as_dataframe()
+                titles = titles[titles["type"].isin(types)]
+            else:
+                titles = pd.DataFrame()
             # titles = titles.astype({"start_year": int})
             if not titles.empty:
+
+                markdown = f"""
+                Returned Journals: {len(titles)}        
+                
+                """
+                st.markdown(markdown)
+
                 st.dataframe(titles)
                 titles["uid"] = (
                     titles["id"] + " | " + titles["type"] + " | " + titles["title"]
@@ -98,7 +107,7 @@ def app():
 
                 if title:
                     journal_id = title.split(" | ")[0]
-                    pubs = dsl.get_pubs_by_journal_id(journal_id, years[0], years[1])
+                    pubs = dsl.search_pubs_by_journal_id(journal_id, years[0], years[1])
                     pubs_df = pubs.as_dataframe()
                     if pubs_df is not None and (not pubs_df.empty):
                         st.write(
@@ -112,6 +121,8 @@ def app():
                         leafmap.st_download_button(
                             "Download data", pubs_df, csv_sep="\t"
                         )
+            else:
+                st.text("No results found")
 
     elif search_type == "List Google Scholar journal categories":
 

@@ -13,12 +13,21 @@ def app():
     st.title("Search Publications by Keyword")
     dsl = st.session_state["dsl"]
 
-    row1_col1, row1_col2, row1_col3 = st.columns(3)
+    (
+        row1_col1,
+        row1_col2,
+        row1_col3,
+        row1_col4,
+        row1_col5,
+    ) = st.columns([1, 0.5, 1, 1, 1])
 
     with row1_col1:
         keywords = st.text_input("Enter a keyword to search for")
 
     with row1_col2:
+        exact_match = st.checkbox("Exact match", True)
+
+    with row1_col3:
         scope = st.selectbox(
             "Select a search scope",
             [
@@ -32,11 +41,21 @@ def app():
             index=5,
         )
 
-    with row1_col3:
+    with row1_col4:
+        years = st.slider("Select the start and end year:", 1950, 2030, (1980, 2022))
+
+    with row1_col5:
         limit = st.slider("Select the number of publications to return", 1, 1000, 100)
 
     if keywords:
-        result = dsl.search_pubs_by_keywords(keywords, scope, limit=limit)
+        result = dsl.search_pubs_by_keyword(
+            keywords,
+            exact_match,
+            scope,
+            start_year=years[0],
+            end_year=years[1],
+            limit=limit,
+        )
         df = scholarpy.json_to_df(result)
         if limit > result.count_total:
             limit = result.count_total
@@ -45,7 +64,7 @@ def app():
         
         """
         st.markdown(markdown)
-        st.dataframe(df)
 
-        if not df.empty:
+        if df is not None:
+            st.dataframe(df)
             leafmap.st_download_button("Download data", df, csv_sep="\t")

@@ -104,7 +104,7 @@ def app():
                     else:
                         st.text("No information found")
 
-                pubs = dsl.get_pubs_by_researcher_id(id, extra=True)
+                pubs = dsl.search_pubs_by_researcher_id(id)
                 df = json_to_df(pubs)
                 # annual_df = annual_pubs(df)
                 if df is not None:

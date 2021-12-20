@@ -21,6 +21,14 @@ def app():
         row1_col5,
     ) = st.columns([1, 0.5, 1, 1, 1])
 
+    (
+        row2_col1,
+        row2_col2,
+        row2_col3,
+        row2_col4,
+        row2_col5,
+    ) = st.columns([1, 0.5, 1, 1, 1])
+
     with row1_col1:
         keywords = st.text_input("Enter a keyword to search for")
 
@@ -61,7 +69,39 @@ def app():
         Returned grants: {limit} (total = {result.count_total})        
         
         """
-        st.markdown(markdown)
+        with row2_col1:
+            st.markdown(markdown)
+
+        with row2_col2:
+            filter = st.checkbox("Apply a filter")
+
+        if filter:
+            countries = []
+            for row in df.itertuples():
+                countries.append(eval(row.funder_countries)[0]["name"])
+            df["funder_country"] = countries
+            with row2_col3:
+                filter_by = st.selectbox(
+                    "Select a filter",
+                    [
+                        "funder_country",
+                        "funding_org_name",
+                        "funding_org_acronym",
+                        "research_org_name",
+                    ],
+                )
+
+                df["funding_org_acronym"] = df["funding_org_acronym"].astype(str)
+                df["research_org_name"] = df["research_org_name"].astype(str)
+                options = df[filter_by].unique()
+                options.sort()
+
+            with row2_col4:
+                selected = st.selectbox("Select a filter value", options)
+                df = df[df[filter_by] == selected]
+
+            with row2_col5:
+                st.write("")
 
         if df is not None:
             st.dataframe(df)

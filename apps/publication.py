@@ -19,7 +19,11 @@ def app():
         row1_col3,
         row1_col4,
         row1_col5,
-    ) = st.columns([1, 0.5, 1, 1, 1])
+    ) = st.columns([1, 0.7, 1, 1, 1])
+
+    row2_col1, row2_col2, row2_col3, row2_col4, row2_col5 = st.columns(
+        [1, 0.7, 1, 1, 1]
+    )
 
     with row1_col1:
         keywords = st.text_input("Enter a keyword to search for")
@@ -63,7 +67,26 @@ def app():
         Returned Publications: {limit} (total = {result.count_total})        
         
         """
-        st.markdown(markdown)
+
+        with row2_col1:
+            st.markdown(markdown)
+
+        with row2_col2:
+            filter = st.checkbox("Filter by journal")
+
+        if filter:
+            df["journal.title"] = df["journal.title"].astype(str)
+            journals = df["journal.title"].unique()
+            journals.sort()
+            with row2_col3:
+                journal = st.selectbox("Select a journal", journals)
+            df = df[df["journal.title"] == journal]
+
+        with row2_col4:
+            st.write("")
+
+        with row2_col5:
+            st.write("")
 
         if df is not None:
             st.dataframe(df)

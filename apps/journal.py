@@ -68,7 +68,13 @@ def app():
             exact_match = st.checkbox("Exact match")
 
         with row1_col3:
-            options = ["book_series", "proceeding", "journal", "preprint_platform"]
+            options = [
+                "book",
+                "book_series",
+                "proceeding",
+                "journal",
+                "preprint_platform",
+            ]
             types = st.multiselect(
                 "Select journal types", options, ["journal", "book_series"]
             )

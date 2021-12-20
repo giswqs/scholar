@@ -68,9 +68,24 @@ def annual_citations(pubs, col="year"):
         return None
 
 
+def the_H_function(sorted_citations_list, n=1):
+    """from a list of integers [n1, n2 ..] representing publications citations,
+    return the max list-position which is >= integer
+
+    eg
+    >>> the_H_function([10, 8, 5, 4, 3]) => 4
+    >>> the_H_function([25, 8, 5, 3, 3]) => 3
+    >>> the_H_function([1000, 20]) => 2
+    """
+    if sorted_citations_list and sorted_citations_list[0] >= n:
+        return the_H_function(sorted_citations_list[1:], n + 1)
+    else:
+        return n - 1
+
+
 def app():
 
-    st.title("Search Researcher by Name")
+    st.title("Search Researchers")
     dsl = st.session_state["dsl"]
     row1_col1, row1_col2 = st.columns([1, 1])
 
@@ -141,6 +156,10 @@ def app():
                 with row1_col1:
                     st.header("Publications")
                     if df is not None:
+                        citations = df["times_cited"].values.tolist()
+                        citations.sort(reverse=True)
+                        h_index = the_H_function(citations)
+                        st.text(f"H-index: {h_index}")
                         st.dataframe(df)
                         leafmap.st_download_button(
                             "Download data", df, file_name="data.csv", csv_sep="\t"

@@ -1,8 +1,12 @@
 from geemap.common import ee_initialize
 import requests
 import folium
+import scholarpy
 import streamlit as st
 import geemap.foliumap as geemap
+
+if "dsl" not in st.session_state:
+    st.session_state["dsl"] = scholarpy.Dsl()
 
 
 def get_orcid_data(orcid, info_type=None):
@@ -89,34 +93,54 @@ def get_education_data(orcid):
 
 def app():
 
-    st.title("Get Education Data from ORCID")
+    dsl = st.session_state["dsl"]
+    st.title("Retrieve ORCID Data")
     m = geemap.Map(center=(20, 0), zoom=2, ee_initialize=False)
 
     row1_col1, row1_col2 = st.columns(2)
 
     with row1_col1:
-        orcids = ["0000-0001-5437-4073", "0000-0001-6157-5519"]
-        if st.session_state.get("orcids", []) is not None:
-            orcids = orcids + st.session_state.get("orcids", [])
-        selected_orcid = st.selectbox("Select an ORCID:", orcids)
+        name = st.text_input("Enter a researcher name", "")
 
-    with row1_col2:
-        orcid = st.text_input("Enter an ORCID:", selected_orcid)
+    if name:
+        orcids = dsl.search_orcid_by_name(name, return_list=True)
+        with row1_col2:
+            if orcids is not None:
+                selected = st.selectbox("Select an ORCID", orcids)
+            else:
+                selected = None
+                st.write("No ORCID found.")
 
-    row2_col1, row2_col2 = st.columns([1, 1])
+        #     orcids = ["0000-0001-5437-4073", "0000-0001-6157-5519"]
+        #     if st.session_state.get("orcids", []) is not None:
+        #         orcids = orcids + st.session_state.get("orcids", [])
+        #     selected_orcid = st.selectbox("Select an ORCID:", orcids)
 
-    if orcid:
-        education_data = get_education_data(orcid)
-        roles = list(education_data.keys())
+        # with row1_col2:
+        #     orcid = st.text_input("Enter an ORCID:", selected_orcid)
 
-        for role in roles:
-            popup = f"<b>Name: </b>{education_data[role]['name']}<br><b>Organization: </b>{education_data[role]['organization']}<br><b>Degree: </b>{role}"
-            marker = folium.Marker(
-                [education_data[role]["lat"], education_data[role]["lng"]], popup=popup
-            )
-            marker.add_to(m)
+        row2_col1, row2_col2 = st.columns([1, 1])
 
-        with row2_col1:
-            st.write(education_data)
-        with row2_col2:
-            m.to_streamlit()
+        if selected is not None:
+            orcid = selected.split("|")[1].strip()
+            education_data = get_education_data(orcid)
+            roles = list(education_data.keys())
+
+            for role in roles:
+                popup = f"<b>Name: </b>{education_data[role]['name']}<br><b>Organization: </b>{education_data[role]['organization']}<br><b>Degree: </b>{role}"
+                marker = folium.Marker(
+                    [education_data[role]["lat"], education_data[role]["lng"]],
+                    popup=popup,
+                )
+                marker.add_to(m)
+
+            with row2_col1:
+                markdown = f"""ORCID URL: <https://orcid.org/{orcid}>"""
+                st.markdown(markdown)
+                if len(education_data) > 0:
+                    st.write("Education:")
+                    st.write(education_data)
+                else:
+                    st.write("No education data found.")
+            with row2_col2:
+                m.to_streamlit()

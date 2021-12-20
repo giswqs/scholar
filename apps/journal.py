@@ -52,7 +52,7 @@ def read_excel(sheet_name):
 
 def app():
 
-    st.title("Search Journal")
+    st.title("Search Journals")
     dsl = st.session_state["dsl"]
     search_type = st.radio(
         "Select a search type",

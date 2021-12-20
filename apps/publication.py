@@ -10,7 +10,7 @@ if "dsl" not in st.session_state:
 
 
 def app():
-    st.title("Search Publications by Keyword")
+    st.title("Search Publications")
     dsl = st.session_state["dsl"]
 
     (

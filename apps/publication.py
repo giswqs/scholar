@@ -61,6 +61,7 @@ def app():
             limit=limit,
         )
         df = scholarpy.json_to_df(result)
+        journal_counts = df.copy()["journal.title"].value_counts()
         if limit > result.count_total:
             limit = result.count_total
         markdown = f"""
@@ -91,3 +92,13 @@ def app():
         if df is not None:
             st.dataframe(df)
             leafmap.st_download_button("Download data", df, csv_sep="\t")
+
+            summary = pd.DataFrame(
+                {"Journal": journal_counts.index, "Count": journal_counts}
+            ).reset_index(drop=True)
+            markdown = f"""
+            - Total number of journals: **{len(summary)}**
+            """
+            st.markdown(markdown)
+            st.dataframe(summary)
+            leafmap.st_download_button("Download data", summary, csv_sep="\t")

@@ -159,11 +159,32 @@ def app():
                         citations = df["times_cited"].values.tolist()
                         citations.sort(reverse=True)
                         h_index = the_H_function(citations)
-                        st.text(f"H-index: {h_index}")
+                        markdown = f"""
+                        - Total number of publications: **{len(df)}**
+                        - Total number of citations: **{df["times_cited"].sum()}**
+                        - i10-index: **{len(df[df["times_cited"]>=10])}**
+                        - h-index: **{h_index}**
+                        """
+                        st.markdown(markdown)
                         st.dataframe(df)
                         leafmap.st_download_button(
                             "Download data", df, file_name="data.csv", csv_sep="\t"
                         )
+
+                        st.header("Publication counts by journal")
+                        journals = df["journal.title"].value_counts()
+                        summary = pd.DataFrame(
+                            {"Journal": journals.index, "Count": journals}
+                        ).reset_index(drop=True)
+                        markdown = f"""
+                        - Total number of journals: **{len(summary)}**
+                        """
+                        st.markdown(markdown)
+                        st.dataframe(summary)
+                        leafmap.st_download_button(
+                            "Download data", summary, file_name="data.csv", csv_sep="\t"
+                        )
+
                     else:
                         st.text("No publications found")
         else:

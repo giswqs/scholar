@@ -84,6 +84,7 @@ def app():
             if result is not None:
                 titles = result.as_dataframe()
                 titles = titles[titles["type"].isin(types)]
+                titles.sort_values("title", inplace=True)
             else:
                 titles = pd.DataFrame()
             # titles = titles.astype({"start_year": int})
@@ -100,20 +101,50 @@ def app():
                     titles["id"] + " | " + titles["type"] + " | " + titles["title"]
                 )
 
-                row2_col1, row2_col2 = st.columns([3, 1])
+                row2_col1, row2_col2, row2_col3, row2_col4, row2_col5 = st.columns(
+                    [2.4, 1, 0.6, 1, 1]
+                )
 
                 with row2_col1:
                     title = st.selectbox(
                         "Select a journal title", titles["uid"].values.tolist()
                     )
+
                 with row2_col2:
+                    keyword = st.text_input("Enter a keyword to search for")
+
+                with row2_col3:
+                    exact_match = st.checkbox("Exact match", True)
+
+                with row2_col4:
+                    scope = st.selectbox(
+                        "Select a search scope",
+                        [
+                            "authors",
+                            "concepts",
+                            "full_data",
+                            "full_data_exact",
+                            "title_abstract_only",
+                            "title_only",
+                        ],
+                        index=5,
+                    )
+
+                with row2_col5:
                     years = st.slider(
                         "Select the start and end year:", 1950, 2021, (1980, 2021)
                     )
 
                 if title:
                     journal_id = title.split(" | ")[0]
-                    pubs = dsl.search_pubs_by_journal_id(journal_id, years[0], years[1])
+                    if keyword:
+                        pubs = dsl.search_pubs_by_keyword(
+                            keyword, exact_match, scope, years[0], years[1], journal_id
+                        )
+                    else:
+                        pubs = dsl.search_pubs_by_journal_id(
+                            journal_id, years[0], years[1]
+                        )
                     pubs_df = pubs.as_dataframe()
                     if pubs_df is not None and (not pubs_df.empty):
                         st.write(

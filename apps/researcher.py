@@ -150,6 +150,19 @@ def app():
                         m.add_points_from_xy(df3)
                         m.to_streamlit(height=420)
 
+                        st.header("Publication counts with collaborators")
+                        collaborators = dsl.search_researcher_collaborators(id, pubs)
+                        markdown = f"""
+                        - Total number of collaborators: **{len(collaborators)}**
+                        """
+                        st.markdown(markdown)
+                        st.dataframe(collaborators)
+                        leafmap.st_download_button(
+                            "Download data",
+                            collaborators,
+                            file_name="data.csv",
+                            csv_sep="\t",
+                        )
                 else:
                     st.text("No publications found")
 

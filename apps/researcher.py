@@ -137,8 +137,18 @@ def app():
                         if selected_columns:
                             fig = scholarpy.annual_stats_barplot(df1, selected_columns)
                             st.plotly_chart(fig)
+                        leafmap.st_download_button(
+                            "Download data",
+                            df1,
+                            file_name="data.csv",
+                            csv_sep="\t",
+                        )
 
                         st.header("Map of collaborator institutions")
+                        markdown = f"""
+                        - Total number of collaborator institutions: **{len(df3)}**
+                        """
+                        st.markdown(markdown)
                         m = leafmap.Map(
                             center=[0, 0],
                             zoom_start=1,
@@ -149,6 +159,12 @@ def app():
                         )
                         m.add_points_from_xy(df3)
                         m.to_streamlit(height=420)
+                        leafmap.st_download_button(
+                            "Download data",
+                            df3,
+                            file_name="data.csv",
+                            csv_sep="\t",
+                        )
 
                         st.header("Publication counts with collaborators")
                         collaborators = dsl.search_researcher_collaborators(id, pubs)
@@ -184,19 +200,25 @@ def app():
                             "Download data", df, file_name="data.csv", csv_sep="\t"
                         )
 
-                        st.header("Publication counts by journal")
-                        journals = df["journal.title"].value_counts()
-                        summary = pd.DataFrame(
-                            {"Journal": journals.index, "Count": journals}
-                        ).reset_index(drop=True)
-                        markdown = f"""
-                        - Total number of journals: **{len(summary)}**
-                        """
-                        st.markdown(markdown)
-                        st.dataframe(summary)
-                        leafmap.st_download_button(
-                            "Download data", summary, file_name="data.csv", csv_sep="\t"
-                        )
+                        if "journal.title" in df.columns:
+                            st.header("Publication counts by journal")
+                            journals = df["journal.title"].value_counts()
+                            summary = pd.DataFrame(
+                                {"Journal": journals.index, "Count": journals}
+                            ).reset_index(drop=True)
+                            markdown = f"""
+                            - Total number of journals: **{len(summary)}**
+                            """
+                            st.markdown(markdown)
+                            st.dataframe(summary)
+                            leafmap.st_download_button(
+                                "Download data",
+                                summary,
+                                file_name="data.csv",
+                                csv_sep="\t",
+                            )
+                        else:
+                            st.text("No journal publications")
 
                     else:
                         st.text("No publications found")

@@ -66,6 +66,6 @@ class MultiApp:
         st.sidebar.title("About")
         st.sidebar.info(
             """
-            The web app URL: <https://scholar.gishub.org>
+            The web app URL: <https://scholar.gishub.org>. If you have any questions regarding this web app, please contact [Qiusheng Wu](https://wetlands.io) (qwu18@utk.edu).
         """
         )

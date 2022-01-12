@@ -1,3 +1,4 @@
+import scholarpy
 import streamlit as st
 from streamlit_option_menu import option_menu
 from apps import grant, home, journal, orcid, publication, researcher
@@ -33,6 +34,9 @@ with st.sidebar:
         The web app URL: <https://scholar.gishub.org>. If you have any questions regarding this web app, please contact [Qiusheng Wu](https://wetlands.io) (qwu18@utk.edu).
     """
     )
+
+if "dsl" not in st.session_state:
+    st.session_state["dsl"] = scholarpy.Dsl()
 
 # Place each app module under the apps folder
 if selected == "Home":

@@ -5,6 +5,7 @@ keplergl
 nbserverproxy
 openpyxl
 streamlit
+streamlit-option-menu
 git+https://github.com/giswqs/leafmap
 git+https://github.com/giswqs/scholarpy
 git+https://github.com/giswqs/geemap

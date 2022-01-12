@@ -1,6 +1,8 @@
 dimcli
 geopandas
+jupyter-server-proxy
 keplergl
+nbserverproxy
 openpyxl
 streamlit
 git+https://github.com/giswqs/leafmap

@@ -38,7 +38,7 @@ with st.sidebar:
     st.sidebar.title("About")
     st.sidebar.info(
         """
-        The web app URL: <https://scholar.gishub.org>. If you have any questions regarding this web app, please contact [Qiusheng Wu](https://wetlands.io) (qwu18@utk.edu).
+        The web app URL: <https://spatial.utk.edu/scholar>. If you have any questions regarding this web app, please contact [Qiusheng Wu](https://wetlands.io) (qwu18@utk.edu).
     """
     )
 

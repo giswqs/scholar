@@ -24,7 +24,7 @@ def app():
 
         if orgs is not None:
             with row1_col1:
-                selected_org = st.selectbox("Select a researcher id:", orgs)
+                selected_org = st.selectbox("Select a organization id:", orgs)
                 org_id = selected_org.split("|")[0].strip()
 
                 id_info = dsl.search_org_by_id(org_id)

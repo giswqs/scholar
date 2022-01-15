@@ -57,7 +57,8 @@ def annual_collaborators(pubs, col="year"):
 def annual_citations(pubs, col="year"):
     if pubs is not None:
         df = pubs.groupby([col]).sum()
-        df2 = pd.DataFrame({"year": df.index, "citations": df["times_cited"].values})
+        df2 = pd.DataFrame(
+            {"year": df.index, "citations": df["times_cited"].values})
         fig = px.bar(
             df2,
             x="year",
@@ -106,7 +107,8 @@ def app():
 
                 info_df = json_to_df(id_info, transpose=True)
                 info_df.rename(
-                    columns={info_df.columns[0]: "Type", info_df.columns[1]: "Value"},
+                    columns={info_df.columns[0]: "Type",
+                             info_df.columns[1]: "Value"},
                     inplace=True,
                 )
                 with row1_col1:
@@ -130,12 +132,14 @@ def app():
 
                     with row1_col2:
                         st.header("Researcher statistics")
-                        columns = ["pubs", "collaborators", "institutions", "cities"]
+                        columns = ["pubs", "collaborators",
+                                   "institutions", "cities"]
                         selected_columns = st.multiselect(
                             "Select attributes to display:", columns, columns
                         )
                         if selected_columns:
-                            fig = scholarpy.annual_stats_barplot(df1, selected_columns)
+                            fig = scholarpy.annual_stats_barplot(
+                                df1, selected_columns)
                             st.plotly_chart(fig)
                         leafmap.st_download_button(
                             "Download data",
@@ -167,7 +171,8 @@ def app():
                         )
 
                         st.header("Publication counts with collaborators")
-                        collaborators = dsl.search_researcher_collaborators(id, pubs)
+                        collaborators = dsl.search_researcher_collaborators(
+                            id, pubs)
                         markdown = f"""
                         - Total number of collaborators: **{len(collaborators)}**
                         """
@@ -222,5 +227,14 @@ def app():
 
                     else:
                         st.text("No publications found")
+
+                    grants = dsl.search_grants_by_researcher(id)
+                    df = grants.as_dataframe()
+                    if not df.empty:
+                        st.header("Grants")
+                        st.dataframe(df)
+                        leafmap.st_download_button(
+                            "Download data", df, file_name="data.csv", csv_sep="\t"
+                        )
         else:
             st.text("No results found.")

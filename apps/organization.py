@@ -46,10 +46,9 @@ def app():
                         st.text("No information found")
 
                 with row1_col2:
-                    st.header("Publications by year")
-
                     years = st.slider(
                         "Select the start and end year:", 1950, 2030, (1980, 2021))
+                    st.header("Publications by year")
 
                     pubs, fig = dsl.org_pubs_annual_stats(
                         org_id, start_year=years[0], end_year=years[1], return_plot=True)
@@ -69,6 +68,7 @@ def app():
                     else:
                         st.text("No publications found")
 
+                with row1_col1:
                     st.header("Top funders")
 
                     funder_count = st.slider(
@@ -88,6 +88,32 @@ def app():
                         )
                     else:
                         st.text("No funders found")
+
+                with row1_col2:
+                    st.header("The number of grants by year")
+                    grants, fig_count, fig_amount = dsl.org_grants_annual_stats(
+                        org_id, start_year=years[0], end_year=years[1], return_plot=True)
+
+                    st.plotly_chart(fig_count)
+                    st.plotly_chart(fig_amount)
+                    leafmap.st_download_button(
+                        "Download data",
+                        grants,
+                        file_name="data.csv",
+                        csv_sep="\t",
+                    )
+
+                with row1_col1:
+                    st.header("List of grants")
+                    st.text("Only the first 1000 grants are shown")
+                    result = dsl.search_grants_by_org(
+                        org_id, start_year=years[0], end_year=years[1])
+                    df = result.as_dataframe()
+                    if not df.empty:
+                        st.dataframe(df)
+                        leafmap.st_download_button(
+                            "Download data", df, file_name="data.csv", csv_sep="\t"
+                        )
 
         else:
             st.text("No organizations found")

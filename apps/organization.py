@@ -54,7 +54,7 @@ def app():
                         org_id, start_year=years[0], end_year=years[1], return_plot=True)
 
                     st.text(
-                        f'Total number of publications: ${pubs["count"].sum():,}')
+                        f'Total number of publications: {pubs["count"].sum():,}')
 
                     if fig is not None:
                         st.plotly_chart(fig)

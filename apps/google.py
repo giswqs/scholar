@@ -79,11 +79,12 @@ def app():
                     st.plotly_chart(citations_fig)
                     leafmap.st_download_button(
                         "Download data", citations_stats, file_name="data.csv", csv_sep="\t")
-
-                    st.header("Co-authors")
-                    st.text("Co-authors listed on Google Scholar profile only.")
-                    coauthors = scholarpy.get_author_coauthors(
-                        record=record, return_df=True)
-                    st.dataframe(coauthors)
-                    leafmap.st_download_button(
-                        "Download data", coauthors, file_name="data.csv", csv_sep="\t")
+                    if len(record["coauthors"]) > 0:
+                        st.header("Co-authors")
+                        st.text(
+                            "Co-authors listed on Google Scholar profile only.")
+                        coauthors = scholarpy.get_author_coauthors(
+                            record=record, return_df=True)
+                        st.dataframe(coauthors)
+                        leafmap.st_download_button(
+                            "Download data", coauthors, file_name="data.csv", csv_sep="\t")

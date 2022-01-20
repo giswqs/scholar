@@ -1,7 +1,7 @@
 import scholarpy
 import streamlit as st
 from streamlit_option_menu import option_menu
-from apps import grant, home, journal, orcid, organization, publication, researcher
+from apps import grant, home, google, journal, orcid, organization, publication, researcher
 
 st.set_page_config(page_title="Scholar Web App", layout="wide")
 
@@ -14,7 +14,10 @@ apps = {"home": {"title": "Home", "icon": "house"},
         "publication": {"title": "Publication", "icon": "journal"},
         "researcher": {"title": "Researcher", "icon": "person-circle"},
         "orcid": {"title": "ORCID", "icon": "person-square"},
-        "organization": {"title": "Organization", "icon": "building"}}
+        "organization": {"title": "Organization", "icon": "building"},
+        "google": {"title": "Google Scholar", "icon": "google"},
+
+        }
 
 
 titles = [app["title"] for app in apps.values()]

@@ -16,16 +16,19 @@ def app():
     st.title("Search Google Scholar")
 
     row1_col1, row1_col2 = st.columns([1, 1])
+    placeholder = st.empty()
 
     with row1_col1:
         name = st.text_input("Enter a researcher name:", "")
 
     if name:
+        placeholder.text("Searching...")
         if name not in st.session_state:
             authors = scholarpy.get_author_list(name)
             st.session_state[name] = authors
         else:
             authors = st.session_state[name]
+        placeholder.empty()
 
         if len(authors) == 0:
             with row1_col1:
@@ -37,6 +40,7 @@ def app():
                 author = st.selectbox("Select a researcher:", authors)
 
             if author:
+                placeholder.text("Retrieving data...")
                 id = author.split("|")[1].strip()
                 if id not in st.session_state:
                     record = scholarpy.get_author_record(id=id)
@@ -88,3 +92,4 @@ def app():
                         st.dataframe(coauthors)
                         leafmap.st_download_button(
                             "Download data", coauthors, file_name="data.csv", csv_sep="\t")
+                placeholder.empty()

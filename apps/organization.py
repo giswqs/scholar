@@ -115,5 +115,39 @@ def app():
                             "Download data", df, file_name="data.csv", csv_sep="\t"
                         )
 
+                with row1_col1:
+                    st.header("Publications most cited in last 2 years")
+                    result = dsl.org_pubs_most_cited(org_id, recent=True, limit=100)
+                    df = scholarpy.json_to_df(result, transpose=False)
+                    if not df.empty:
+                        st.dataframe(df)
+                        leafmap.st_download_button(
+                            "Download data", df, file_name="data.csv", csv_sep="\t"
+                        )
+
+                with row1_col2:
+                    st.header("Publications most cited - all time")
+                    result = dsl.org_pubs_most_cited(org_id, recent=False, limit=100)
+                    df = scholarpy.json_to_df(result, transpose=False)
+                    if not df.empty:
+                        st.dataframe(df)
+                        leafmap.st_download_button(
+                            "Download data", df, file_name="data.csv", csv_sep="\t"
+                        )
+
+                df, area_fig, journal_fig = dsl.org_pubs_top_areas(org_id, return_plot=True)
+                if not df.empty:
+                    with row1_col1:
+                        st.header("Research areas of most cited publications")
+                        st.plotly_chart(area_fig)
+                        # leafmap.st_download_button(
+                        #     "Download data", df, file_name="data.csv", csv_sep="\t"
+                        # )
+                    with row1_col2:
+                        st.header("Journals of most cited publications")
+                        st.plotly_chart(journal_fig)                    
+                        leafmap.st_download_button(
+                            "Download data", df, file_name="data.csv", csv_sep="\t"
+                        )
         else:
             st.text("No organizations found")

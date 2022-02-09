@@ -3,7 +3,9 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from apps import grant, home, google, journal, orcid, organization, publication, researcher
 
-st.set_page_config(page_title="Scholar Web App", layout="wide")
+st.set_page_config(page_title="Scholar Web App",
+                   page_icon="chart_with_upwards_trend",
+                   layout="wide")
 
 # A dictionary of apps in the format of {"App title": "App icon"}
 # More icons can be found here: https://icons.getbootstrap.com
@@ -38,12 +40,19 @@ with st.sidebar:
         default_index=default_index,
     )
 
-    st.sidebar.title("About")
+    # st.sidebar.title("About")
     st.sidebar.info(
         """
-        The web app URL: <https://spatial.utk.edu/scholar>. If you have any questions regarding this web app, please contact [Qiusheng Wu](https://wetlands.io) (qwu18@utk.edu).
+        **Web App URL:** 
+        <https://spatial.utk.edu/scholar>
+
+        **Project Team:**
+        - [Shih-Lung Shaw](https://geography.utk.edu/about-us/faculty/dr-shih-lung-shaw)
+        - [Shellen Wu](https://history.utk.edu/people/shellen-wu)
+        - [Qiusheng Wu](https://geography.utk.edu/about-us/faculty/dr-qiusheng-wu)
     """
     )
+    st.image("https://i.imgur.com/2WhANKg.png")
 
 if "dsl" not in st.session_state:
     st.session_state["dsl"] = scholarpy.Dsl()

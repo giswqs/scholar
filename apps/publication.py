@@ -60,7 +60,15 @@ def app():
             end_year=years[1],
             limit=limit,
         )
+
         df = scholarpy.json_to_df(result)
+        affiliations = result.as_dataframe_authors_affiliations()
+        country_df = affiliations.groupby(['pub_id'])['aff_country'].unique()
+        df = df.merge(country_df, left_on='id', right_on='pub_id')
+
+        countries = [c[c.astype(bool)].size for c in df['aff_country']]
+        df['country_count'] = countries
+
         journal_counts = df.copy()["journal.title"].value_counts()
         if limit > result.count_total:
             limit = result.count_total
@@ -99,6 +107,16 @@ def app():
             markdown = f"""
             - Total number of journals: **{len(summary)}**
             """
-            st.markdown(markdown)
-            st.dataframe(summary)
-            leafmap.st_download_button("Download data", summary, csv_sep="\t")
+
+            row3_col1, row3_col2 = st.columns([1, 1])
+
+            with row3_col1:
+                st.markdown(markdown)
+                st.dataframe(summary)
+                leafmap.st_download_button("Download data", summary, csv_sep="\t")
+
+            with row3_col2:
+                fig = px.box(df, x='year', y='country_count', title='Country Counts')
+                st.plotly_chart(fig)
+
+

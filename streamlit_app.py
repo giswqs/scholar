@@ -44,11 +44,9 @@ with st.sidebar:
     st.sidebar.info(
         """
         **Web App URL:** 
-        <https://spatial.utk.edu/scholar>
+        <https://scholar.streamlit.app>
 
-        **Project Team:**
-        - [Shih-Lung Shaw](https://geography.utk.edu/about-us/faculty/dr-shih-lung-shaw)
-        - [Shellen Wu](https://history.utk.edu/people/shellen-wu)
+        **Contact:**
         - [Qiusheng Wu](https://geography.utk.edu/about-us/faculty/dr-qiusheng-wu)
     """
     )
